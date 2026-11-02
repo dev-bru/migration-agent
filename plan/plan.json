@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "project": "migration-agent",
+  "title": "Migration Agent (FDE)",
+  "stage": "queued",
+  "gate": "open",
+  "stages": [
+    {
+      "id": "brainstorm",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "research",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "diagrams",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "documents",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "plan",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "audit",
+      "status": "todo",
+      "summary": ""
+    },
+    {
+      "id": "gate",
+      "status": "todo",
+      "summary": ""
+    }
+  ],
+  "artifacts": [],
+  "questions": [],
+  "assumptions": [],
+  "updated": 1793612239.0697844
+}

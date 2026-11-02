@@ -1,0 +1,1 @@
+P4: forward-deployed-engineer style data migration. An agent moves a team's projects and tasks from one tool's export (Trello-like JSON) into another tool's model (Notion-like) through connectors; TypeScript MCP server for the target system; mapping plan, dry run, validation report, resumable batches, human sign-off. Teaching project: diagrams, eli5 explainers, lessons.
