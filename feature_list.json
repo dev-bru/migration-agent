@@ -93,7 +93,9 @@
         "McpTarget starts the server with sys.executable -m migration_agent.target_server"
       ],
       "test_command": "uv run pytest tests/test_target_contract.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793615870,
+      "baseline_tests": 5
     },
     {
       "id": "F-006",
@@ -111,7 +113,9 @@
         "default pytest run executes 0 live tests"
       ],
       "test_command": "uv run pytest tests/test_model.py tests/test_fakes.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793615890,
+      "baseline_tests": 15
     },
     {
       "id": "F-007",
@@ -129,7 +133,9 @@
         "run guard refuses a missing or mismatched signoff; dry-run needs none"
       ],
       "test_command": "uv run pytest tests/test_mapping.py tests/test_signoff.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793615894,
+      "baseline_tests": 20
     },
     {
       "id": "F-008",
