@@ -3,9 +3,11 @@
 import importlib
 import os
 from pathlib import Path
+import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 from types import SimpleNamespace
 
 import pytest
@@ -75,8 +77,12 @@ def test_guard_and_import():
     assert socket.getaddrinfo("127.0.0.1", 80)
 
 
-def test_default_excludes_live(tmp_path):
+def test_default_excludes_live():
     """Keep live tests out of a normal offline run."""
+    # A folder inside the project, not the shared temp folder: pytest scans the folders above the test file,
+    # and other programs add and delete files in the shared temp folder at the same time.
+    root = Path(__file__).resolve().parents[1]
+    tmp_path = Path(tempfile.mkdtemp(prefix=".pytest-tmp-selection-", dir=root))
     sentinel = tmp_path / "test_selection.py"
     sentinel.write_text(
         "import pytest\n"
@@ -85,8 +91,12 @@ def test_default_excludes_live(tmp_path):
         "def test_live():\n    raise AssertionError('live test must not run')\n",
         encoding="utf-8", newline="\n",
     )
-    config = Path(__file__).resolve().parents[1] / "pyproject.toml"
-    result = subprocess.run([sys.executable, "-m", "pytest", "-c", str(config), str(sentinel), "-q"],
-                            capture_output=True, text=True, timeout=30)
+    config = root / "pyproject.toml"
+    try:
+        result = subprocess.run([sys.executable, "-m", "pytest", "-c", str(config), "--rootdir", str(root),
+                                 "-p", "no:cacheprovider", str(sentinel), "-q"],
+                                capture_output=True, text=True, timeout=30)
+    finally:
+        shutil.rmtree(tmp_path, ignore_errors=True)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "1 passed, 1 deselected" in result.stdout
