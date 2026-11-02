@@ -6,7 +6,11 @@
     {
       "id": "F-001",
       "title": "Project setup (Python), settings, dependency record",
-      "req_ids": ["REQ-001", "REQ-002", "REQ-019"],
+      "req_ids": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-019"
+      ],
       "acceptance": [
         "uv sync --locked succeeds",
         "pyproject runtime deps pinned with ==; no package.json and no .ts files in the repo",
@@ -16,12 +20,16 @@
         "every dependency is listed in docs/DEPENDENCIES.md"
       ],
       "test_command": "uv run pytest tests/test_settings.py tests/test_project.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793614376,
+      "baseline_tests": 30
     },
     {
       "id": "F-002",
       "title": "Source models, export reader, sample board export",
-      "req_ids": ["REQ-003"],
+      "req_ids": [
+        "REQ-003"
+      ],
       "acceptance": [
         "fixtures/acme_board.json loads; counts match the file",
         "card with unknown member id loads and appears in export.warnings",
@@ -29,12 +37,17 @@
         "same file read twice gives equal results and the same source_hash"
       ],
       "test_command": "uv run pytest tests/test_source.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793614378,
+      "baseline_tests": 15
     },
     {
       "id": "F-003",
       "title": "Target store: SQLite schema and Notion-like model (Python, stdlib sqlite3)",
-      "req_ids": ["REQ-004", "REQ-016"],
+      "req_ids": [
+        "REQ-004",
+        "REQ-016"
+      ],
       "acceptance": [
         "create a database with 3 properties and read the schema back",
         "unknown property type rejected with the list of valid types",
@@ -43,12 +56,17 @@
         "store.py starts with a plain-English comment block"
       ],
       "test_command": "uv run pytest tests/test_target_store.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793614380,
+      "baseline_tests": 16
     },
     {
       "id": "F-004",
       "title": "Target MCP server (FastMCP) with idempotent upsert tools",
-      "req_ids": ["REQ-005", "REQ-006"],
+      "req_ids": [
+        "REQ-005",
+        "REQ-006"
+      ],
       "acceptance": [
         "FastMCP in-memory client lists exactly the 7 tools",
         "missing required property and wrong value type return isError naming the property",
@@ -57,12 +75,17 @@
         "one stdio round trip: python -m migration_agent.target_server answers a count_pages call as a child process"
       ],
       "test_command": "uv run pytest tests/test_target_server.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793614389,
+      "baseline_tests": 10
     },
     {
       "id": "F-005",
       "title": "Python target client, FakeTarget, shared contract tests",
-      "req_ids": ["REQ-007", "REQ-019"],
+      "req_ids": [
+        "REQ-007",
+        "REQ-019"
+      ],
       "acceptance": [
         "the same contract tests pass on FakeTarget and on McpTarget (temp SQLite)",
         "isError result raises TargetError with the server message",
@@ -75,7 +98,10 @@
     {
       "id": "F-006",
       "title": "Model client on LiteLLM, socket guard, scripted fake model",
-      "req_ids": ["REQ-008", "REQ-019"],
+      "req_ids": [
+        "REQ-008",
+        "REQ-019"
+      ],
       "acceptance": [
         "chat() passes model, api_base, key from env and timeout to litellm.completion (patched)",
         "missing key env var error names the variable and prints no other env values",
@@ -90,7 +116,10 @@
     {
       "id": "F-007",
       "title": "Mapping plan with confidence and questions, human sign-off",
-      "req_ids": ["REQ-009", "REQ-010"],
+      "req_ids": [
+        "REQ-009",
+        "REQ-010"
+      ],
       "acceptance": [
         "valid scripted reply writes plan.json with source_hash equal to the export hash",
         "bad field name triggers one repair call, then succeeds; two bad replies raise PlanError, no file written",
@@ -105,7 +134,9 @@
     {
       "id": "F-008",
       "title": "Transform and dry run",
-      "req_ids": ["REQ-011"],
+      "req_ids": [
+        "REQ-011"
+      ],
       "acceptance": [
         "transform maps source records to target records using the plan (pure functions)",
         "dry run makes 0 write calls on FakeTarget",
@@ -118,7 +149,9 @@
     {
       "id": "F-009",
       "title": "Resumable idempotent batches with checkpoint",
-      "req_ids": ["REQ-012"],
+      "req_ids": [
+        "REQ-012"
+      ],
       "acceptance": [
         "120 cards with batch size 50 give 3 batches and a target count of 120",
         "failure on batch 2 stops the run; rerun finishes with 120 and no duplicates",
@@ -133,7 +166,9 @@
     {
       "id": "F-010",
       "title": "Validation: counts, required fields, relations, content sample",
-      "req_ids": ["REQ-013"],
+      "req_ids": [
+        "REQ-013"
+      ],
       "acceptance": [
         "clean migration: all four checks pass",
         "deleted page fails the count check naming entity and difference",
@@ -147,7 +182,9 @@
     {
       "id": "F-011",
       "title": "Customer-facing migration report",
-      "req_ids": ["REQ-014"],
+      "req_ids": [
+        "REQ-014"
+      ],
       "acceptance": [
         "report.md has Summary, What moved, What changed, What did not move, Checks, Next steps",
         "--no-llm report is complete and makes no model call",
@@ -161,7 +198,12 @@
     {
       "id": "F-012",
       "title": "CLI, offline demo, six lessons, target server walkthrough",
-      "req_ids": ["REQ-015", "REQ-016", "REQ-017", "REQ-019"],
+      "req_ids": [
+        "REQ-015",
+        "REQ-016",
+        "REQ-017",
+        "REQ-019"
+      ],
       "acceptance": [
         "migration-agent demo exits 0 offline and writes plan, signoff, checkpoint, validation, report",
         "each command prints a one-line error and exits 1 on a known error (no traceback)",

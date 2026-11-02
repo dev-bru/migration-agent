@@ -9,3 +9,4 @@ migration-agent.toml
 .env
 runs/
 .migration-agent/
+.pytest-tmp-*/
