@@ -1,0 +1,9 @@
+# Copy this file to migration-agent.toml to set local values.
+# Keep API keys in environment variables only.
+source = "fixtures/acme_board.json"
+target_server = "python -m migration_agent.target_server"
+db_path = ".migration-agent/target.sqlite"
+batch_size = 50
+model = "openai/local-qwen"
+api_base = "http://127.0.0.1:8080/v1"
+runs_dir = "runs"

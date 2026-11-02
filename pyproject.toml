@@ -1,10 +1,11 @@
 [project]
 name = "migration-agent"
 version = "0.1.0"
-description = "Forward-deployed-engineer style data migration with an AI mapping assistant and a TypeScript MCP server."
+description = "Forward-deployed-engineer style data migration with an AI mapping assistant and a Python MCP server."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "fastmcp==4.1.4",
     "litellm==1.106.6",
     "mcp==2.3.0",
     "pydantic==2.14.2",

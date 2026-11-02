@@ -11,7 +11,7 @@ batches, validate, report. The owner was rejected for an FDE migrations role for
 Data movement must be repeatable and testable. The model only proposes mappings and writes summaries. Every number
 in the report comes from code.
 
-## D-003 Target is a TypeScript MCP server over SQLite (human, idea)
+## D-003 Target is a TypeScript MCP server over SQLite (human, idea) - SUPERSEDED by D-014
 Covers the Node/TypeScript gap. MCP is the only way the agent reaches the target, so the server is a real product
 boundary with its own tests.
 
@@ -23,7 +23,7 @@ tier limits and model names; check at setup.
 Upsert by external id makes any batch safe to send twice. This covers a crash between the target write and the
 checkpoint write. Alternative (exactly-once with a transaction log) is more code and is not needed.
 
-## D-006 SQLite driver: better-sqlite3, fallback node:sqlite (ASSUMPTION)
+## D-006 SQLite driver: better-sqlite3, fallback node:sqlite (ASSUMPTION) - SUPERSEDED by D-014 (stdlib sqlite3)
 better-sqlite3 is widely used and sync. It needs a prebuilt binary or a compiler on Windows: UNVERIFIED. Check in
 F-001. If it fails, use Node's built-in `node:sqlite` and record the change here.
 
@@ -43,15 +43,20 @@ Counts alone miss wrong values. A fixed-seed sample of records is compared field
 
 ## D-011 Tests use scripted fakes and a fake target (Claude, same pattern as Agent Lab)
 Fast tests use `FakeTarget`. Contract tests run the same cases on `FakeTarget` and `McpTarget` so the fake cannot
-drift. The TS server has its own vitest suite.
+drift. The target server tests run in the same pytest run.
 
 ## D-012 Exact pins on both sides (Claude, harness rule)
-Python `==` pins with `uv.lock`. npm exact versions with `package-lock.json` and `npm ci`. Supply-chain care for
-both ecosystems.
+Python `==` pins with `uv.lock`. Supply-chain care. (The npm half is gone, D-014.)
 
 ## D-013 Two phases (Claude)
-Phase 1 builds the target and the data path (setup, source, TS server, client). Phase 2 adds the agent steps
+Phase 1 builds the target and the data path (setup, source, Python target server, client). Phase 2 adds the agent steps
 (model, plan, sign-off, dry run, batches, validate, report, CLI, lessons).
+
+## D-014 Python-only target server (owner, 2026-11-02)
+Owner rule: Python only for backend, agent and tool code; TypeScript only for frontends. The target workspace is a
+Python MCP server built with FastMCP 4.1.4 (same library and pattern as Agent Lab: `mcp_server.py`, `mcp_client.py`)
+over a stdlib `sqlite3` store, in `src/migration_agent/target_server/`. The agent reaches it over stdio through the
+FastMCP `Client`. Supersedes D-003 (TypeScript) and D-006 (better-sqlite3). No Node, npm or `server/` folder.
 
 ## ASSUMPTIONS (confirm at the SPEC GATE)
 - A-1 Won't in v1: real Trello or Notion APIs, real customer data, web UI, cloud hosting, two-way sync.

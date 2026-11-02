@@ -5,17 +5,17 @@
   "features": [
     {
       "id": "F-001",
-      "title": "Project setup (Python and Node), settings, dependency record",
+      "title": "Project setup (Python), settings, dependency record",
       "req_ids": ["REQ-001", "REQ-002", "REQ-019"],
       "acceptance": [
-        "uv sync --locked and npm ci --prefix server succeed",
-        "pyproject runtime deps pinned with ==; server/package.json has no ^ or ~ versions",
+        "uv sync --locked succeeds",
+        "pyproject runtime deps pinned with ==; no package.json and no .ts files in the repo",
         "migration-agent --help lists plan, signoff, dry-run, run, validate, report",
         "settings load defaults from the example file; MIGRATION_AGENT_BATCH_SIZE overrides; bad int names the key",
         "no key-like strings and no user or drive paths in tracked text files",
-        "every dependency is listed in docs/DEPENDENCIES.md; one trivial server test passes"
+        "every dependency is listed in docs/DEPENDENCIES.md"
       ],
-      "test_command": "uv run pytest tests/test_settings.py tests/test_project.py && npm test --prefix server",
+      "test_command": "uv run pytest tests/test_settings.py tests/test_project.py",
       "status": "failing"
     },
     {
@@ -33,30 +33,30 @@
     },
     {
       "id": "F-003",
-      "title": "TypeScript server: SQLite store and Notion-like schema",
+      "title": "Target store: SQLite schema and Notion-like model (Python, stdlib sqlite3)",
       "req_ids": ["REQ-004", "REQ-016"],
       "acceptance": [
         "create a database with 3 properties and read the schema back",
         "unknown property type rejected with the list of valid types",
         "relation property must name an existing database",
         "pages and people have external_id unique per database",
-        "store.ts starts with a plain-English comment block"
+        "store.py starts with a plain-English comment block"
       ],
-      "test_command": "npm test --prefix server -- store",
+      "test_command": "uv run pytest tests/test_target_store.py",
       "status": "failing"
     },
     {
       "id": "F-004",
-      "title": "TypeScript MCP tools with idempotent upsert",
+      "title": "Target MCP server (FastMCP) with idempotent upsert tools",
       "req_ids": ["REQ-005", "REQ-006"],
       "acceptance": [
-        "in-memory transport lists exactly the 7 tools",
+        "FastMCP in-memory client lists exactly the 7 tools",
         "missing required property and wrong value type return isError naming the property",
         "two upserts with the same external id give count 1, results created then updated",
         "relation to an unknown external id returns isError naming the id",
-        "built server answers one count_pages call over stdio as a child process"
+        "one stdio round trip: python -m migration_agent.target_server answers a count_pages call as a child process"
       ],
-      "test_command": "npm test --prefix server",
+      "test_command": "uv run pytest tests/test_target_server.py",
       "status": "failing"
     },
     {
@@ -67,7 +67,7 @@
         "the same contract tests pass on FakeTarget and on McpTarget (temp SQLite)",
         "isError result raises TargetError with the server message",
         "missing server command error names the setting target_server",
-        "McpTarget tests skip with a clear message if server/dist is not built"
+        "McpTarget starts the server with sys.executable -m migration_agent.target_server"
       ],
       "test_command": "uv run pytest tests/test_target_contract.py",
       "status": "failing"
@@ -160,14 +160,14 @@
     },
     {
       "id": "F-012",
-      "title": "CLI, offline demo, six lessons, TypeScript walkthrough",
+      "title": "CLI, offline demo, six lessons, target server walkthrough",
       "req_ids": ["REQ-015", "REQ-016", "REQ-017", "REQ-019"],
       "acceptance": [
         "migration-agent demo exits 0 offline and writes plan, signoff, checkpoint, validation, report",
         "each command prints a one-line error and exits 1 on a known error (no traceback)",
         "lessons 01-06 run with --fake, exit 0, print one expected line",
-        "lessons/07_mcp_in_typescript.md exists; each lesson starts with a What you will learn comment",
-        "every .py under src and .ts under server/src starts with a comment block; public functions have docstrings"
+        "lessons/07_mcp_target_server.md exists; each lesson starts with a What you will learn comment",
+        "every .py under src starts with a comment block; public functions have docstrings"
       ],
       "test_command": "uv run pytest tests/test_cli.py tests/test_lessons.py tests/test_comments.py",
       "status": "failing"

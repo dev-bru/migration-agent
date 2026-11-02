@@ -1,0 +1,66 @@
+{
+  "boards": [
+    {
+      "id": "board-acme",
+      "name": "Acme Moon Garden",
+      "description": "A made-up team builds a pretend moon garden.",
+      "closed": false,
+      "lists": [
+        {"id": "list-todo", "name": "To do"},
+        {"id": "list-doing", "name": "Doing"},
+        {"id": "list-done", "name": "Done"}
+      ],
+      "members": [
+        {"id": "member-fern", "name": "Fern Example", "email": "fern@example.com"},
+        {"id": "member-ash", "name": "Ash Example", "email": "ash@example.com"}
+      ],
+      "labels": [
+        {"id": "label-green", "name": "Garden", "color": "green"},
+        {"id": "label-blue", "name": "Garden", "color": "blue"},
+        {"id": "label-orange", "name": "Review", "color": "orange"}
+      ],
+      "cards": [
+        {
+          "id": "card-seeds",
+          "name": "Choose pretend seeds",
+          "description": "Pick three seeds for the moon garden.",
+          "list_id": "list-todo",
+          "due": null,
+          "member_ids": ["member-fern"],
+          "label_ids": ["label-green", "label-blue"],
+          "checklists": [
+            {
+              "id": "checklist-seeds",
+              "name": "Seed choices",
+              "items": [
+                {"id": "item-mint", "name": "Choose moon mint", "done": true},
+                {"id": "item-bean", "name": "Choose star beans", "done": false},
+                {"id": "item-moss", "name": "Choose comet moss", "done": false}
+              ]
+            }
+          ],
+          "comments": [
+            {"id": "comment-one", "text": "Moon mint looks good.", "member_id": "member-ash", "created_at": "2026-10-01T09:00:00Z"},
+            {"id": "comment-two", "text": "We can try star beans too.", "member_id": "member-fern", "created_at": "2026-10-02T10:00:00Z"}
+          ],
+          "attachments": [
+            {"id": "link-guide", "name": "Pretend seed guide", "url": "https://example.com/seeds"},
+            {"id": "link-sketch", "name": "Pretend garden sketch", "url": "https://example.com/garden"}
+          ]
+        },
+        {
+          "id": "card-pots",
+          "name": "Draw pretend pots",
+          "description": "Sketch pots for the made-up seeds.",
+          "list_id": "list-doing",
+          "due": "2026-11-15T12:00:00Z",
+          "member_ids": ["member-missing"],
+          "label_ids": ["label-orange"],
+          "checklists": [],
+          "comments": [],
+          "attachments": []
+        }
+      ]
+    }
+  ]
+}

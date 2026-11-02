@@ -25,11 +25,10 @@ Source: I = idea (`plan/idea.md`), H = harness rule, A = assumption (confirm at 
 
 ## Foundation
 **REQ-001 (M, I/H) Project setup.** Python 3.12 with uv, package `migration_agent` under `src/`, console script
-`migration-agent`. Node project in `server/` with a lock file. Python dependencies use `==` pins; `uv.lock` has
-hashes. npm dependencies are exact versions in `package.json` with `package-lock.json`.
-- AC1: `uv sync --locked` and `npm ci --prefix server` succeed on a fresh clone.
+`migration-agent`. Python dependencies use `==` pins; `uv.lock` has hashes. No Node, npm or TypeScript (D-014).
+- AC1: `uv sync --locked` succeeds on a fresh clone.
 - AC2: a test parses `pyproject.toml`: every runtime dependency uses `==`.
-- AC3: a test parses `server/package.json`: no dependency version starts with `^` or `~`.
+- AC3: a test checks the repo has no `package.json` and no `.ts` files.
 - AC4: `uv run migration-agent --help` lists `plan`, `signoff`, `dry-run`, `run`, `validate`, `report`.
 - AC5: every dependency is listed in `docs/DEPENDENCIES.md`.
 
@@ -41,7 +40,7 @@ hashes. npm dependencies are exact versions in `package.json` with `package-lock
 - AC1: a test loads the example file and gets the defaults above.
 - AC2: `MIGRATION_AGENT_BATCH_SIZE=5` gives 5; a non-integer gives an error naming the key.
 - AC3: a test scans the repo text files for key-like strings (`AIza`, `gsk_`, `nvapi-`) and finds none.
-- AC4: a test scans `src`, `server/src`, `tests` for `C:\Users` and drive-letter paths and finds none.
+- AC4: a test scans `src`, `tests` for `C:\Users` and drive-letter paths and finds none.
 
 ## Source side
 **REQ-003 (M, I) Source reader and fixtures.** Typed models for board, list, card, label, member, checklist,
@@ -52,19 +51,19 @@ and the field.
 - AC3: a card with a missing `name` raises `SourceError` naming the card id.
 - AC4: reading the same file twice gives equal results and the same `source_hash` (SHA-256 of the bytes).
 
-## Target side (TypeScript)
+## Target side (Python)
 **REQ-004 (M, I) Notion-like store.** SQLite tables: `databases`, `properties` (name, type: title, text, number,
 date, select, multi_select, person, url, relation, checkbox; `required` flag; relation target database),
 `pages`, `page_values`, `people`. Each page and person has `external_id`, unique per database.
-- AC1: a vitest test creates a database with 3 properties and reads the schema back.
+- AC1: a pytest test creates a database with 3 properties and reads the schema back.
 - AC2: an unknown property type is rejected with a message that lists valid types.
 - AC3: a relation property must name an existing database.
 
-**REQ-005 (M, I) MCP tools.** The server uses the official MCP TypeScript SDK over stdio. Tools:
+**REQ-005 (M, I) MCP tools.** The server is a FastMCP 4.1.4 server (`migration_agent.target_server`) over stdio, on the stdlib `sqlite3` store. Tools:
 `create_database`, `list_databases`, `upsert_person`, `upsert_page`, `get_page`, `list_pages`, `count_pages`.
-Every tool has a zod input schema. Bad input returns an MCP result with `isError: true` and a message that says
+Every tool has typed Python parameters (FastMCP builds the input schema). Bad input returns an MCP result with `isError: true` and a message that says
 what was wrong and what is valid. No exception leaves the server.
-- AC1: a test starts the server in-process with the SDK in-memory transport and lists exactly those 7 tools.
+- AC1: a test connects with the FastMCP in-memory client and lists exactly those 7 tools.
 - AC2: `upsert_page` with a missing required property returns `isError: true` naming the property.
 - AC3: `upsert_page` with a value of the wrong type returns `isError: true` naming property and expected type.
 - AC4: `count_pages` returns the page count for a database.
@@ -75,9 +74,9 @@ server resolves them; a relation to an unknown external id returns `isError: tru
 - AC1: two upserts with the same external id give count 1 and result `created` then `updated`.
 - AC2: upsert with identical values twice leaves `page_values` byte-equal (no change).
 - AC3: a relation to an unknown external id returns `isError: true` naming the id.
-- AC4: a stdio smoke test starts the built server as a child process and completes one `count_pages` call.
+- AC4: a stdio smoke test starts the server (`python -m migration_agent.target_server`) as a child process and completes one `count_pages` call.
 
-**REQ-007 (M, I) Python target client.** `McpTarget` opens the server over stdio with the Python `mcp` package
+**REQ-007 (M, I) Python target client.** `McpTarget` opens the server over stdio with the FastMCP `Client` (stdio)
 and exposes the same methods as `FakeTarget`: `create_database`, `upsert_person`, `upsert_page`, `count_pages`,
 `list_pages`, `get_page`. Tool errors become `TargetError`.
 - AC1: a test runs both `FakeTarget` and `McpTarget` (temp SQLite) through the same contract tests; results match.
@@ -170,16 +169,16 @@ flow on the sample export with `--fake`, and answers questions from a canned fil
 - AC2: each command exits 1 with a one-line message on a known error (no traceback).
 
 ## Teaching
-**REQ-016 (M, I/H) Comments.** Every Python and TypeScript source file starts with a plain-English comment (eli5,
+**REQ-016 (M, I/H) Comments.** Every Python source file starts with a plain-English comment (eli5,
 ASD-STE100 style): what the file does and why. Every public function has a short comment.
-- AC1: a test checks each `.py` file under `src` and each `.ts` file under `server/src` starts with a comment
+- AC1: a test checks each `.py` file under `src` starts with a comment
   block of at least 3 lines.
 - AC2: a test checks every public function in `src` has a docstring.
 
 **REQ-017 (M, I) Lessons.** Six lessons in `lessons/`, each one runs alone with `--fake` and prints a short result:
 01 what an FDE does and the migration steps; 02 reading the source and its mess; 03 mapping plan with a model;
 04 dry run; 05 idempotent batches and checkpoints (including a forced crash); 06 validation and the report. A
-seventh doc, `lessons/07_mcp_in_typescript.md`, walks through the TS server file by file.
+seventh doc, `lessons/07_mcp_target_server.md`, walks through the Python target server file by file.
 - AC1: a test runs each lesson script with `--fake` and checks exit 0 and one expected line.
 - AC2: each lesson file starts with a "What you will learn" comment of at most 5 lines.
 
@@ -187,7 +186,7 @@ seventh doc, `lessons/07_mcp_in_typescript.md`, walks through the TS server file
 dry run, run, validate, report) in `plan/`, linked from the README.
 - AC1: the file opens with no network and lists all six flows.
 
-**REQ-019 (M, H) Offline test suite.** `uv run pytest` and `npm test --prefix server` pass with no model server,
+**REQ-019 (M, H) Offline test suite.** `uv run pytest` passes with no model server,
 no network and no API keys set.
-- AC1: both commands pass with the three key env vars unset.
+- AC1: the command passes with the three key env vars unset.
 - AC2: the test count never drops below the baseline in the feature list.
