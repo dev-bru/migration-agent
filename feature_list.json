@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "project": "migration-agent",
+  "_rules": "Every feature starts failing. Status changes ONLY via scripts/verify_feature.py after tests run.",
+  "features": [
+    {
+      "id": "F-001",
+      "title": "Project setup (Python and Node), settings, dependency record",
+      "req_ids": ["REQ-001", "REQ-002", "REQ-019"],
+      "acceptance": [
+        "uv sync --locked and npm ci --prefix server succeed",
+        "pyproject runtime deps pinned with ==; server/package.json has no ^ or ~ versions",
+        "migration-agent --help lists plan, signoff, dry-run, run, validate, report",
+        "settings load defaults from the example file; MIGRATION_AGENT_BATCH_SIZE overrides; bad int names the key",
+        "no key-like strings and no user or drive paths in tracked text files",
+        "every dependency is listed in docs/DEPENDENCIES.md; one trivial server test passes"
+      ],
+      "test_command": "uv run pytest tests/test_settings.py tests/test_project.py && npm test --prefix server",
+      "status": "failing"
+    },
+    {
+      "id": "F-002",
+      "title": "Source models, export reader, sample board export",
+      "req_ids": ["REQ-003"],
+      "acceptance": [
+        "fixtures/acme_board.json loads; counts match the file",
+        "card with unknown member id loads and appears in export.warnings",
+        "card with missing name raises SourceError naming the card id",
+        "same file read twice gives equal results and the same source_hash"
+      ],
+      "test_command": "uv run pytest tests/test_source.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-003",
+      "title": "TypeScript server: SQLite store and Notion-like schema",
+      "req_ids": ["REQ-004", "REQ-016"],
+      "acceptance": [
+        "create a database with 3 properties and read the schema back",
+        "unknown property type rejected with the list of valid types",
+        "relation property must name an existing database",
+        "pages and people have external_id unique per database",
+        "store.ts starts with a plain-English comment block"
+      ],
+      "test_command": "npm test --prefix server -- store",
+      "status": "failing"
+    },
+    {
+      "id": "F-004",
+      "title": "TypeScript MCP tools with idempotent upsert",
+      "req_ids": ["REQ-005", "REQ-006"],
+      "acceptance": [
+        "in-memory transport lists exactly the 7 tools",
+        "missing required property and wrong value type return isError naming the property",
+        "two upserts with the same external id give count 1, results created then updated",
+        "relation to an unknown external id returns isError naming the id",
+        "built server answers one count_pages call over stdio as a child process"
+      ],
+      "test_command": "npm test --prefix server",
+      "status": "failing"
+    },
+    {
+      "id": "F-005",
+      "title": "Python target client, FakeTarget, shared contract tests",
+      "req_ids": ["REQ-007", "REQ-019"],
+      "acceptance": [
+        "the same contract tests pass on FakeTarget and on McpTarget (temp SQLite)",
+        "isError result raises TargetError with the server message",
+        "missing server command error names the setting target_server",
+        "McpTarget tests skip with a clear message if server/dist is not built"
+      ],
+      "test_command": "uv run pytest tests/test_target_contract.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-006",
+      "title": "Model client on LiteLLM, socket guard, scripted fake model",
+      "req_ids": ["REQ-008", "REQ-019"],
+      "acceptance": [
+        "chat() passes model, api_base, key from env and timeout to litellm.completion (patched)",
+        "missing key env var error names the variable and prints no other env values",
+        "timeout and HTTP errors become ModelTimeout and ModelError",
+        "socket guard blocks non-loopback connects; importing the model module passes under it",
+        "FakeModel replays a JSON script, records requests, raises ScriptExhausted at the end",
+        "default pytest run executes 0 live tests"
+      ],
+      "test_command": "uv run pytest tests/test_model.py tests/test_fakes.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-007",
+      "title": "Mapping plan with confidence and questions, human sign-off",
+      "req_ids": ["REQ-009", "REQ-010"],
+      "acceptance": [
+        "valid scripted reply writes plan.json with source_hash equal to the export hash",
+        "bad field name triggers one repair call, then succeeds; two bad replies raise PlanError, no file written",
+        "confidence below 0.7 creates a question",
+        "prompt holds at most 3 sample values per field",
+        "signoff refuses with unanswered questions; writes signoff.json with the plan hash",
+        "run guard refuses a missing or mismatched signoff; dry-run needs none"
+      ],
+      "test_command": "uv run pytest tests/test_mapping.py tests/test_signoff.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-008",
+      "title": "Transform and dry run",
+      "req_ids": ["REQ-011"],
+      "acceptance": [
+        "transform maps source records to target records using the plan (pure functions)",
+        "dry run makes 0 write calls on FakeTarget",
+        "output lists the unknown-member warning and a preview of the first mapped card",
+        "required target property with no source fails with a message naming it"
+      ],
+      "test_command": "uv run pytest tests/test_transform.py tests/test_dryrun.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-009",
+      "title": "Resumable idempotent batches with checkpoint",
+      "req_ids": ["REQ-012"],
+      "acceptance": [
+        "120 cards with batch size 50 give 3 batches and a target count of 120",
+        "failure on batch 2 stops the run; rerun finishes with 120 and no duplicates",
+        "finished checkpoint: rerun does nothing and exits 0",
+        "checkpoint with a different plan hash is refused",
+        "crash after target write but before checkpoint write, then rerun, gives no duplicates",
+        "checkpoint is always valid JSON (temp file then rename)"
+      ],
+      "test_command": "uv run pytest tests/test_migrate.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-010",
+      "title": "Validation: counts, required fields, relations, content sample",
+      "req_ids": ["REQ-013"],
+      "acceptance": [
+        "clean migration: all four checks pass",
+        "deleted page fails the count check naming entity and difference",
+        "changed title fails the content check naming record and field",
+        "removed relation fails the relation check naming the page id",
+        "same seed gives the same sample"
+      ],
+      "test_command": "uv run pytest tests/test_validate.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-011",
+      "title": "Customer-facing migration report",
+      "req_ids": ["REQ-014"],
+      "acceptance": [
+        "report.md has Summary, What moved, What changed, What did not move, Checks, Next steps",
+        "--no-llm report is complete and makes no model call",
+        "a number in the model reply that is not in the data files is dropped",
+        "a failed check shows as FAIL with ids",
+        "every number in the report appears in validation.json, checkpoint.json or plan.json"
+      ],
+      "test_command": "uv run pytest tests/test_report.py",
+      "status": "failing"
+    },
+    {
+      "id": "F-012",
+      "title": "CLI, offline demo, six lessons, TypeScript walkthrough",
+      "req_ids": ["REQ-015", "REQ-016", "REQ-017", "REQ-019"],
+      "acceptance": [
+        "migration-agent demo exits 0 offline and writes plan, signoff, checkpoint, validation, report",
+        "each command prints a one-line error and exits 1 on a known error (no traceback)",
+        "lessons 01-06 run with --fake, exit 0, print one expected line",
+        "lessons/07_mcp_in_typescript.md exists; each lesson starts with a What you will learn comment",
+        "every .py under src and .ts under server/src starts with a comment block; public functions have docstrings"
+      ],
+      "test_command": "uv run pytest tests/test_cli.py tests/test_lessons.py tests/test_comments.py",
+      "status": "failing"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+[project]
+name = "migration-agent"
+version = "0.1.0"
+description = "Forward-deployed-engineer style data migration with an AI mapping assistant and a TypeScript MCP server."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "litellm==1.106.6",
+    "mcp==2.3.0",
+    "pydantic==2.14.2",
+    "typer==0.27.3",
+    "tzdata==2026.6",
+]
+
+[project.scripts]
+migration-agent = "migration_agent.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "pytest-xdist==3.8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/migration_agent"]
+
+[tool.pytest.ini_options]
+addopts = "-m 'not live'"
+markers = ["live: needs a model server or a hosted API key (opt-in: pytest -m live)"]
+testpaths = ["tests"]
+pythonpath = ["src"]
