@@ -150,7 +150,9 @@
         "required target property with no source fails with a message naming it"
       ],
       "test_command": "uv run pytest tests/test_transform.py tests/test_dryrun.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793620806,
+      "baseline_tests": 4
     },
     {
       "id": "F-009",
@@ -167,7 +169,9 @@
         "checkpoint is always valid JSON (temp file then rename)"
       ],
       "test_command": "uv run pytest tests/test_migrate.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793620812,
+      "baseline_tests": 5
     },
     {
       "id": "F-010",
@@ -183,7 +187,9 @@
         "same seed gives the same sample"
       ],
       "test_command": "uv run pytest tests/test_validate.py",
-      "status": "failing"
+      "status": "passing",
+      "last_verified": 1793620818,
+      "baseline_tests": 6
     },
     {
       "id": "F-011",
