@@ -1,0 +1,50 @@
+# Glossary
+
+One line each. Code location in brackets where useful.
+
+- **Agent (here)**: Python code that runs the steps. The model is only one helper inside it. It is not an autonomous tool-calling agent.
+- **Atomic write**: write to a temp file, then rename, so readers never see half a file. [`migrate.py:20`]
+- **Batch**: a group of records (default 50) sent and checkpointed together. [`migrate.py:80`]
+- **Checkpoint**: `checkpoint.json`; per-entity count of finished batches, bound to the plan hash. [`migrate.py:58`]
+- **Confidence**: the model's own 0 to 1 guess for one field mapping. A routing hint, not a probability.
+- **Contract test**: one test run against a fake and the real thing to prove they behave the same. [`tests/test_target_contract.py:14`]
+- **Content sample**: seeded random records compared field by field after the move. [`validate.py:70`]
+- **Dry run**: preview of the move with zero writes. [`dryrun.py:11`]
+- **Dependency order**: people, board, card, checklist_item, comment, so links point at existing pages. [`migrate.py:54`]
+- **Entity**: one kind of source record (board, card, list, label, member, checklist_item, comment, attachment). [`mapping.py:65`]
+- **external_id**: the source system's id for a record; the idempotency key in the target. [`store.py:54`]
+- **FakeModel**: replays scripted text replies; records requests. [`fakes.py:24`]
+- **FakeTarget**: in-process target on the real `Store`; counts write calls. [`fakes.py:53`]
+- **FastMCP**: Python library that turns typed functions into MCP tools and serves them. Pinned version in `docs/DEPENDENCIES.md`.
+- **FDE (Forward Deployed Engineer)**: engineer embedded with a customer to make the product work on their real data.
+- **Grounded**: every number in a sentence appears in the saved evidence. [`report.py:31`]
+- **Hash (sha256)**: fingerprint of exact bytes. Used for the export, the plan and the approval. [`signoff.py:33`]
+- **Human in the loop**: a person must answer and approve before the irreversible step.
+- **Idempotent**: doing it twice has the same effect as once.
+- **isError**: MCP tool-result flag for a failed call; becomes `TargetError`. [`target.py:102`]
+- **LiteLLM**: one Python API for many model providers. [`model.py:46`]
+- **Live test**: test that needs a real model; opt in with `-m live`.
+- **MappingPlan**: the checked proposal: entities, fields, questions, `source_hash`, `signed_off`. [`mapping.py:55`]
+- **MCP (Model Context Protocol)**: protocol for a client to list and call tools on a server.
+- **McpTarget**: client that starts the server as a child process and calls its tools. [`target.py:63`]
+- **Offline**: no network, no key; fakes for model and target.
+- **Pagination**: reading a list in slices (`offset`, `limit`). [`store.py:253`, `validate.py:42`]
+- **Plan hash**: sha256 of the exact `plan.json` bytes. [`signoff.py:33`]
+- **PlanError**: the model's proposal failed a check. [`mapping.py:19`]
+- **Property type**: one of title, text, number, date, select, multi_select, person, url, relation, checkbox. [`store.py:17`]
+- **Prompt injection**: text in data that tries to give the model orders. Mitigated by small samples and "data, not instructions". [`mapping.py:154`]
+- **Relation**: a property that links to a page in another database by source id. [`transform.py:42`]
+- **Repair turn**: one extra model call that returns the error text. [`mapping.py:172`]
+- **Resumable**: can continue after a stop from saved progress.
+- **Seed**: integer that fixes a random sample. [`validate.py:70`]
+- **Sign-off**: human approval saved as `signoff.json` (`plan_hash`, `signed_by`, `signed_at`). [`signoff.py:22`]
+- **Socket guard**: test hook that blocks non-loopback network. [`tests/conftest.py:8`]
+- **Source warning**: a data problem kept visible instead of failing or dropping, such as an unknown member id. [`source.py:148`]
+- **stdio transport**: MCP over the child process's standard input and output. [`target.py:82`]
+- **Store**: SQLite-backed Notion-like workspace (databases, properties, pages, people). [`store.py:27`]
+- **TargetError**: error for a failed target call, same for fake and MCP. [`target.py:24`]
+- **ToolError**: FastMCP exception that becomes an `isError` result. [`server.py:26`]
+- **Transform**: pure function from source records plus plan to target records. [`transform.py:10`]
+- **Upsert**: update the record if the key exists, else insert it. [`store.py:189`]
+- **Validation check**: one of counts, required_properties, relations, content_sample; status pass, fail or warn. [`validate.py:20`]
+- **Write call**: any target call that can change data (`create_database`, `upsert_person`, `upsert_page`). [`fakes.py:76`]
