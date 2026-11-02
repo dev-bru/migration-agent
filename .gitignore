@@ -10,3 +10,4 @@ migration-agent.toml
 runs/
 .migration-agent/
 .pytest-tmp-*/
+.codex-tmp/

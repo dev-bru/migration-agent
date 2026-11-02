@@ -1,3 +1,6 @@
+# Call the target through MCP.
+# Keep the same small interface for real and fake workspaces.
+# Turn server failures into errors the agent can explain.
 """Call the target through MCP.
 
 Keep the same small interface for real and fake workspaces.

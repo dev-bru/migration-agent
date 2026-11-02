@@ -1,3 +1,6 @@
+# Read settings for a migration.
+# Environment values take the place of file values.
+# Keep API keys in the environment, outside these settings.
 """Read settings for a migration.
 
 Environment values take the place of file values.

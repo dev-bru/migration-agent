@@ -56,14 +56,16 @@ def test_cli_help_and_entry_point():
 
 
 @pytest.mark.parametrize("command", COMMANDS)
-def test_command_help_and_placeholder(command, tmp_path, monkeypatch):
-    """Each command explains itself and makes no migration files yet."""
+def test_command_help_and_missing_inputs(command, tmp_path, monkeypatch):
+    """Each command explains itself and refuses missing input without artifacts."""
     monkeypatch.chdir(tmp_path)
     runner = CliRunner()
     assert runner.invoke(app, [command, "--help"]).exit_code == 0
     result = runner.invoke(app, [command])
-    assert result.exit_code == 0
-    assert "not implemented yet" in result.output
+    assert result.exit_code == 1, result.output
+    assert len(result.output.strip().splitlines()) == 1
+    assert "not implemented yet" not in result.output
+    assert "Traceback" not in result.output
     assert list(tmp_path.iterdir()) == []
 
 

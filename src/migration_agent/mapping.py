@@ -1,3 +1,6 @@
+# Build a small mapping proposal for human review.
+# Send a few field samples, then check the reply against both schemas.
+# Write a plan only after it passes every check.
 """Build a small mapping proposal for human review.
 
 Send a few field samples, then check the reply against both schemas.

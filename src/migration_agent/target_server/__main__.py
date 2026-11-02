@@ -1,3 +1,6 @@
+# Run the target workspace as a local MCP child process.
+# Read the same settings as the migration agent.
+# Use standard input and output for MCP messages.
 """Run the target workspace as a local MCP child process.
 
 Read the same settings as the migration agent.

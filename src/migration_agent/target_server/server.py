@@ -1,3 +1,6 @@
+# Expose the SQLite workspace as seven MCP tools.
+# Keep data checks in the store so each tool follows the same rules.
+# Return useful tool errors instead of stopping the server.
 """Expose the SQLite workspace as seven MCP tools.
 
 Keep data checks in the store so each tool follows the same rules.

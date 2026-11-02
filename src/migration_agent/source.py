@@ -1,3 +1,6 @@
+# Read and check a board export.
+# Keep source records in typed models for later mapping.
+# Warn about unknown people so their cards are not lost.
 """Read and check a board export.
 
 Keep source records in typed models for later mapping.

@@ -1,3 +1,6 @@
+# Save the target workspace in a local SQLite file.
+# Check records before writing them so a bad record cannot erase good data.
+# Use source IDs to update records safely when a migration runs again.
 """Save the target workspace in a local SQLite file.
 
 Check records before writing them so a bad record cannot erase good data.

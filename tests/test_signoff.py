@@ -3,12 +3,16 @@
 from copy import deepcopy
 import hashlib
 import json
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
 
 from migration_agent.cli import app
 from migration_agent.signoff import SignoffError, require_signoff, signoff
+from migration_agent.source import read_export
+
+ROOT = Path(__file__).resolve().parents[1]
 
 PLAN = {"version": 1, "source_hash": "made-up-hash", "entities": [
     {"source": "card", "target_database": "Tasks", "fields": []}],
@@ -17,9 +21,15 @@ PLAN = {"version": 1, "source_hash": "made-up-hash", "entities": [
 
 def _plan(tmp_path, answer=None):
     data = deepcopy(PLAN)
+    data["source_hash"] = read_export(ROOT / "fixtures/acme_board.json").source_hash
+    data["entities"][0]["fields"] = [dict(source_field="name", target_property="Title", type="title",
+                                          confidence=1.0, reason="Keep name")]
     data["questions"][0]["answer"] = answer
     path = tmp_path / "plan.json"
     path.write_text(json.dumps(data), encoding="utf-8")
+    (tmp_path / "settings.toml").write_text(
+        f"source = '{(ROOT / 'fixtures/acme_board.json').as_posix()}'\n"
+        f"runs_dir = '{tmp_path.as_posix()}'\n", encoding="utf-8", newline="\n")
     return path
 
 
@@ -48,7 +58,10 @@ def test_answered_signoff_hash_and_cli_name(tmp_path):
     assert approval["signed_at"]
     assert json.loads(path.read_bytes())["signed_off"] is True
     require_signoff(path, tmp_path / "signoff.json")
-    assert CliRunner().invoke(app, ["run", "--plan-path", str(path)]).exit_code == 0
+    runner = CliRunner()
+    result = runner.invoke(app, ["run", "--plan-path", str(path), "--fake",
+                                 "--settings", str(tmp_path / "settings.toml")])
+    assert result.exit_code == 0, result.output
 
 
 def test_run_guard_missing_and_changed_approval(tmp_path):
@@ -69,7 +82,8 @@ def test_run_guard_missing_and_changed_approval(tmp_path):
 def test_dry_run_does_not_need_signoff(tmp_path):
     """Allow the preview entry point to read an unsigned plan."""
     path = _plan(tmp_path)
-    result = CliRunner().invoke(app, ["dry-run", "--plan-path", str(path)])
+    result = CliRunner().invoke(app, ["dry-run", "--plan-path", str(path), "--fake",
+                                    "--settings", str(tmp_path / "settings.toml")])
     assert result.exit_code == 0, result.output
     assert not (tmp_path / "signoff.json").exists()
 

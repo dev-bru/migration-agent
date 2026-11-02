@@ -1,3 +1,6 @@
+# Ask a model for text, never for target writes.
+# Read provider keys only from the environment.
+# Keep LiteLLM lookups and telemetry off for local and offline use.
 """Ask a model for text, never for target writes.
 
 Read provider keys only from the environment.

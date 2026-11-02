@@ -1,6 +1,9 @@
+# Provide local substitutes for tests.
+# Keep target data local and model replies in a script.
+# Never start a server or call a model from these fakes.
 """Provide local substitutes for tests.
 
-Keep target data in memory and model replies in a script.
+Keep target data local and model replies in a script.
 Never start a server or call a model from these fakes.
 """
 
@@ -50,9 +53,11 @@ class FakeModel:
 class FakeTarget(Target):
     """Use the real value checks with an in-memory workspace."""
 
-    def __init__(self):
-        """Open an empty workspace and reset its write counter."""
-        self.store = Store()
+    def __init__(self, path: str | Path = ":memory:", schema=()):
+        """Open a local test workspace with optional starting schemas."""
+        self.store = Store(path)
+        for spec in schema:
+            self.store.create_database(spec)
         self.write_calls = 0
 
     async def __aenter__(self):

@@ -1,3 +1,6 @@
+# Record human approval of the exact saved plan.
+# Keep unanswered questions from reaching a real run.
+# Check the saved hash again before any migration writes.
 """Record human approval of the exact saved plan.
 
 Keep unanswered questions from reaching a real run.

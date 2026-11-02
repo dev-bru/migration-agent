@@ -1,0 +1,115 @@
+[
+  {
+    "name": "Projects",
+    "properties": [
+      {
+        "name": "Name",
+        "type": "title",
+        "required": true
+      },
+      {
+        "name": "Description",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "Closed",
+        "type": "checkbox",
+        "required": false
+      }
+    ]
+  },
+  {
+    "name": "Tasks",
+    "properties": [
+      {
+        "name": "Title",
+        "type": "title",
+        "required": true
+      },
+      {
+        "name": "Project",
+        "type": "relation",
+        "relation_database": "Projects",
+        "required": false
+      },
+      {
+        "name": "Status",
+        "type": "select",
+        "required": false
+      },
+      {
+        "name": "Tags",
+        "type": "multi_select",
+        "required": false
+      },
+      {
+        "name": "Owners",
+        "type": "person",
+        "required": false
+      },
+      {
+        "name": "Due",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "Links",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "Description",
+        "type": "text",
+        "required": false
+      }
+    ]
+  },
+  {
+    "name": "Subtasks",
+    "properties": [
+      {
+        "name": "Title",
+        "type": "title",
+        "required": true
+      },
+      {
+        "name": "Done",
+        "type": "checkbox",
+        "required": false
+      },
+      {
+        "name": "Task",
+        "type": "relation",
+        "relation_database": "Tasks",
+        "required": false
+      }
+    ]
+  },
+  {
+    "name": "Comments",
+    "properties": [
+      {
+        "name": "Text",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "Author",
+        "type": "person",
+        "required": false
+      },
+      {
+        "name": "Created",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "Task",
+        "type": "relation",
+        "relation_database": "Tasks",
+        "required": false
+      }
+    ]
+  }
+]
