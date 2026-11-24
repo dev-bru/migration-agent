@@ -11,3 +11,9 @@ runs/
 .migration-agent/
 .pytest-tmp-*/
 .codex-tmp/
+.pytest-*/
+.codex-tmp/
+.env.*
+node_modules/
+.harness/
+.tmp/

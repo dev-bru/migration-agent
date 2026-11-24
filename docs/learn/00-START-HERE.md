@@ -36,7 +36,7 @@ All data is made up (`fixtures/acme_board.json`). No network or key is needed fo
 
 ## Run it offline in 3 commands
 
-From `D:\Projects\migration-agent` (project Python 3.12 in `.venv`):
+From the `migration-agent` project folder (project Python 3.12 in `.venv`):
 
 ```powershell
 .venv/Scripts/python.exe -m migration_agent.cli demo --runs-dir runs/demo

@@ -115,3 +115,15 @@ under the project. Dependencies and versions are recorded in
 - What invalidates approval? Any change to the saved plan bytes changes its hash.
 - Why can a crashed batch run again? The source ID updates the same target record.
 - Why validate after successful writes? Counts alone cannot detect a changed title or missing link.
+
+## Tech stack
+
+Python 3.12, FastMCP / MCP, LiteLLM, Pydantic, Typer, pytest, uv. Exact versions are pinned in `pyproject.toml` and `uv.lock`.
+
+## Learning pack
+
+Start with [docs/learn/00-START-HERE.md](docs/learn/00-START-HERE.md) (architecture, glossary, lessons).
+
+## License
+
+MIT, see `LICENSE`.
